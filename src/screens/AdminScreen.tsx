@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Users, CheckCircle, XCircle, ShieldCheck, Plus, Eye } from '@phosphor-icons/react'
-import { supabase } from '../lib/supabase'
+import { supabase, supabaseAdmin } from '../lib/supabase'
 import { Header } from '../components/layout/Header'
 import { useAppStore } from '../store/useAppStore'
 import { useNavigate } from 'react-router-dom'
@@ -71,7 +71,7 @@ export function AdminScreen() {
       return
     }
 
-    const { error } = await supabase.auth.admin.createUser({
+    const { error } = await supabaseAdmin.auth.admin.createUser({
       email: newUser.email,
       password: newUser.password,
       user_metadata: { full_name: newUser.full_name, role: 'student' },
