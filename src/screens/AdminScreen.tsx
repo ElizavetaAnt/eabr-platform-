@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Users, CheckCircle, XCircle, ShieldCheck, Plus, Eye } from '@phosphor-icons/react'
-import { supabase, supabaseAdmin } from '../lib/supabase'
+import { supabase } from '../lib/supabase'
 import { Header } from '../components/layout/Header'
 import { useAppStore } from '../store/useAppStore'
 import { useNavigate } from 'react-router-dom'
@@ -71,12 +71,25 @@ export function AdminScreen() {
       return
     }
 
-    const { error } = await supabaseAdmin.auth.admin.createUser({
-      email: newUser.email,
-      password: newUser.password,
-      user_metadata: { full_name: newUser.full_name, role: 'student' },
-      email_confirm: true,
-    })
+    const { data: { session } } = await supabase.auth.getSession()
+    const res = await fetch(
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-user`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session?.access_token}`,
+          apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+        },
+        body: JSON.stringify({
+          email: newUser.email,
+          password: newUser.password,
+          full_name: newUser.full_name,
+        }),
+      }
+    )
+    const json = await res.json()
+    const error = json.error ? { message: json.error } : null
 
     if (error) {
       setAddError(error.message)
