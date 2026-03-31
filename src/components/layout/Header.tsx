@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { SignOut, House, ShieldCheck, User, Lock } from '@phosphor-icons/react'
+import { SignOut, House, ShieldCheck, User, Lock, Eye, EyeSlash } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useAppStore } from '../../store/useAppStore'
@@ -12,6 +12,7 @@ export function Header() {
   const [changingPassword, setChangingPassword] = useState(false)
   const [newPassword, setNewPassword] = useState('')
   const [pwMsg, setPwMsg] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -163,20 +164,41 @@ export function Header() {
                   </button>
                 ) : (
                   <div style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <input
-                      type="password"
-                      placeholder="Новый пароль"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      style={{
-                        padding: '8px 10px',
-                        border: '1.5px solid #e0e7ef',
-                        borderRadius: '6px',
-                        fontSize: '13px',
-                        fontFamily: 'Inter, sans-serif',
-                        outline: 'none',
-                      }}
-                    />
+                    <div style={{ position: 'relative' }}>
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Новый пароль"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        style={{
+                          padding: '8px 36px 8px 10px',
+                          border: '1.5px solid #e0e7ef',
+                          borderRadius: '6px',
+                          fontSize: '13px',
+                          fontFamily: 'Inter, sans-serif',
+                          outline: 'none',
+                          width: '100%',
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        style={{
+                          position: 'absolute',
+                          right: '8px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
+                          color: '#607D8B',
+                          padding: 0,
+                          display: 'flex',
+                        }}
+                      >
+                        {showPassword ? <EyeSlash size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
                     {pwMsg && (
                       <p style={{ fontSize: '12px', color: pwMsg.includes('изменён') ? '#2E7D32' : '#C62828', margin: 0 }}>
                         {pwMsg}
