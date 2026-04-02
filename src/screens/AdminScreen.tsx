@@ -94,7 +94,7 @@ export function AdminScreen() {
     if (error) {
       setAddError(error.message)
     } else {
-      setAddSuccess(`Пользователь ${newUser.full_name} создан`)
+      setAddSuccess(`✓ ${newUser.full_name} создан | Email: ${newUser.email} | Пароль: ${newUser.password}`)
       setNewUser({ email: '', password: '', full_name: '' })
       loadData()
     }
