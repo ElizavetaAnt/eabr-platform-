@@ -367,10 +367,6 @@ export function DashboardScreen() {
               style={{ fontSize: '13px', color: '#1A2B4A', textDecoration: 'none', fontWeight: 500 }}>
               ea-brmed.ru
             </a>
-            <a href="https://elizavetaant.github.io/eabr-med/#" target="_blank" rel="noopener noreferrer"
-              style={{ fontSize: '13px', color: '#607D8B', textDecoration: 'none' }}>
-              elizavetaant.github.io/eabr-med
-            </a>
           </div>
         </div>
       </main>
