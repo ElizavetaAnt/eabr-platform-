@@ -31,6 +31,17 @@ Deno.serve(async (req) => {
     })
   }
 
+  const { error: profileError } = await supabaseAdmin
+    .from('profiles')
+    .insert({ id: data.user.id, full_name, role: 'student' })
+
+  if (profileError) {
+    return new Response(JSON.stringify({ error: profileError.message }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+
   return new Response(JSON.stringify({ user: data.user }), {
     status: 200,
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
