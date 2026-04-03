@@ -1,4 +1,14 @@
 import type { ModuleContent } from '../types'
+import module1 from './module-1'
+import module2 from './module-2'
+import module3 from './module-3'
+import module4 from './module-4'
+import module5 from './module-5'
+import module6 from './module-6'
+import module7 from './module-7'
+import module8 from './module-8'
+import module9 from './module-9'
+import module10 from './module-10'
 
 // Список всех модулей (метаданные для Dashboard и карты)
 export const MODULES_META = [
@@ -14,12 +24,19 @@ export const MODULES_META = [
   { id: 'module-10', order: 10, title: 'Команда как система', subtitle: 'Как роли работают вместе', icon: 'UsersThree', color: '#2E7D32' },
 ]
 
-// Контент будет добавлен в отдельных файлах
+const MODULE_MAP: Record<string, ModuleContent> = {
+  'module-1': module1,
+  'module-2': module2,
+  'module-3': module3,
+  'module-4': module4,
+  'module-5': module5,
+  'module-6': module6,
+  'module-7': module7,
+  'module-8': module8,
+  'module-9': module9,
+  'module-10': module10,
+}
+
 export const getModuleById = async (id: string): Promise<ModuleContent | null> => {
-  try {
-    const mod = await import(`./${id}.ts`)
-    return mod.default as ModuleContent
-  } catch {
-    return null
-  }
+  return MODULE_MAP[id] ?? null
 }

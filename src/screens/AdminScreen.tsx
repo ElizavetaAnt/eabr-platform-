@@ -12,6 +12,7 @@ interface UserRow {
   role: string
   contract_signed_at: string | null
   created_at: string
+  temp_password: string | null
 }
 
 interface QuizRow {
@@ -94,6 +95,12 @@ export function AdminScreen() {
     if (error) {
       setAddError(error.message)
     } else {
+      const userId = json.user?.id
+      if (userId) {
+        await supabase.from('profiles').update({
+          temp_password: newUser.password,
+        }).eq('id', userId)
+      }
       setAddSuccess(`✓ ${newUser.full_name} создан | Email: ${newUser.email} | Пароль: ${newUser.password}`)
       setNewUser({ email: '', password: '', full_name: '' })
       loadData()
@@ -245,7 +252,7 @@ export function AdminScreen() {
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ background: '#F4F7FB' }}>
-                    {['ФИО', 'Договор', 'Прогресс', 'Дата регистрации'].map((h) => (
+                    {['ФИО', 'Пароль', 'Договор', 'Прогресс', 'Дата регистрации'].map((h) => (
                       <th
                         key={h}
                         style={{
@@ -273,6 +280,9 @@ export function AdminScreen() {
                     >
                       <td style={{ padding: '12px 16px', fontSize: '14px', color: '#1A2B4A', fontWeight: 500 }}>
                         {u.full_name}
+                      </td>
+                      <td style={{ padding: '12px 16px', fontSize: '13px', color: '#1A2B4A', fontFamily: 'monospace' }}>
+                        {u.temp_password ?? '—'}
                       </td>
                       <td style={{ padding: '12px 16px' }}>
                         {u.contract_signed_at ? (

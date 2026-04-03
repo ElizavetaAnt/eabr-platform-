@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import {
-  UserCircle, GraduationCap, Phone, ChartBar, Newspaper,
+  UserCircle, GraduationCap, Phone, Newspaper,
   InstagramLogo, Users, Calculator, Crown, UsersThree,
   LockSimple, CheckCircle, BookOpen, Timer, Trophy,
   Gift, TelegramLogo, Envelope, Globe,
@@ -11,7 +11,7 @@ import { Watermark } from '../components/layout/Watermark'
 import { MODULES_META } from '../content/modules'
 
 const ICON_MAP: Record<string, React.ElementType> = {
-  UserCircle, GraduationCap, Phone, ChartBar, Newspaper,
+  UserCircle, GraduationCap, Phone, Newspaper,
   InstagramLogo, Users, Calculator, Crown, UsersThree,
 }
 
@@ -204,28 +204,6 @@ export function DashboardScreen() {
                 >
                   <GraduationCap size={18} weight="fill" />
                   Сайт EA-B.R MED
-                </a>
-                <a
-                  href="https://elizavetaant.github.io/medznania323/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    background: 'rgba(46,125,50,0.85)',
-                    border: '1.5px solid rgba(46,125,50,0.6)',
-                    borderRadius: '10px',
-                    padding: '14px 20px',
-                    color: '#fff',
-                    textDecoration: 'none',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    transition: 'background 0.15s',
-                  }}
-                >
-                  <ChartBar size={18} weight="fill" />
-                  Проверь правовые знания: медицина и закон
                 </a>
               </div>
             </div>
