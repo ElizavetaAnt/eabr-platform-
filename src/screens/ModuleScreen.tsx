@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import {
   UserCircle, GraduationCap, Phone, ChartBar, Newspaper,
   InstagramLogo, Users, Calculator, Crown, UsersThree,
@@ -28,6 +28,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
 export function ModuleScreen() {
   const { moduleId } = useParams<{ moduleId: string }>()
   const navigate = useNavigate()
+  const location = useLocation()
   const { user, setModuleCompleted, setQuizResult } = useAppStore()
   const [module, setModule] = useState<ModuleContent | null>(null)
   const [loading, setLoading] = useState(true)
@@ -104,7 +105,7 @@ export function ModuleScreen() {
       <Watermark />
       <Header />
 
-      <main style={{ maxWidth: '760px', margin: '0 auto', padding: '32px 20px' }}>
+      <main className="module-main" style={{ maxWidth: '760px', margin: '0 auto', padding: '32px 20px' }}>
         {/* Навигация */}
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px' }}>
           <button
@@ -174,7 +175,7 @@ export function ModuleScreen() {
               case 'scenario':
                 return (
                   <ScenarioBlock
-                    key={section.id}
+                    key={`${location.key}-${moduleId}-${section.id}`}
                     situation={section.situation}
                     options={section.options}
                   />

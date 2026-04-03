@@ -21,6 +21,10 @@
   padding: 0;
 }
 
+html, body {
+  overflow-x: hidden;
+}
+
 body {
   font-family: 'Inter', sans-serif;
   background-color: var(--color-surface);
@@ -58,4 +62,37 @@ h1, h2 {
 
 .animate-fade-in {
   animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Mobile responsive overrides */
+@media (max-width: 640px) {
+  .comparison-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+  }
+  .comparison-grid > div:last-child {
+    border-left: none !important;
+    border-top: 1px solid #FFCDD2;
+  }
+
+  .header-user-name {
+    max-width: 72px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .header-nav-label {
+    display: none;
+  }
+
+  .module-main {
+    padding: 16px 12px !important;
+  }
+
+  .role-card-box {
+    padding: 20px !important;
+  }
 }

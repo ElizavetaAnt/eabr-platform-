@@ -8,6 +8,7 @@ interface ComparisonBlockProps {
 export function ComparisonBlock({ included, excluded }: ComparisonBlockProps) {
   return (
     <div
+      className="comparison-grid"
       style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',

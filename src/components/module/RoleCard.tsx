@@ -9,6 +9,7 @@ interface RoleCardProps {
 export function RoleCard({ title, subtitle, description, keyPhrase, icon }: RoleCardProps) {
   return (
     <div
+      className="role-card-box"
       style={{
         background: 'linear-gradient(135deg, #1A2B4A 0%, #2a3f6a 100%)',
         borderRadius: '16px',

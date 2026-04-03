@@ -125,8 +125,8 @@ export function Header() {
               onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(176,197,216,0.1)')}
               onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
             >
-              <User size={16} weight="fill" />
-              {user.full_name}
+                      <User size={16} weight="fill" />
+              <span className="header-user-name">{user.full_name}</span>
             </button>
 
             {menuOpen && (
@@ -305,7 +305,7 @@ function NavBtn({
       }}
     >
       {icon}
-      {label}
+      <span className="header-nav-label">{label}</span>
     </button>
   )
 }
