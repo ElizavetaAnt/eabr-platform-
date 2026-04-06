@@ -67,7 +67,7 @@ export function AdminScreen() {
   const handleDeleteUser = async (userId: string, name: string) => {
     if (!confirm(`Удалить пользователя ${name}?`)) return
     const { data: { session } } = await supabase.auth.getSession()
-    await fetch(
+    const res = await fetch(
       `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-user`,
       {
         method: 'POST',
@@ -79,6 +79,10 @@ export function AdminScreen() {
         body: JSON.stringify({ user_id: userId }),
       }
     )
+    const json = await res.json()
+    if (json.error) {
+      alert('Ошибка удаления: ' + json.error)
+    }
     loadData()
   }
 
