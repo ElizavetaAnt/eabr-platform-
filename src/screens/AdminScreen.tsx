@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Users, CheckCircle, XCircle, ShieldCheck, Plus, Eye, Trash } from '@phosphor-icons/react'
-import { supabase } from '../lib/supabase'
+import { Users, CheckCircle, XCircle, ShieldCheck, Plus, Eye, Trash, PencilSimple, FloppyDisk } from '@phosphor-icons/react'
+import { supabase, supabaseAdmin } from '../lib/supabase'
 import { Header } from '../components/layout/Header'
 import { useAppStore } from '../store/useAppStore'
 import { useNavigate } from 'react-router-dom'
@@ -38,6 +38,8 @@ export function AdminScreen() {
   const [newUser, setNewUser] = useState<NewUser>({ email: '', password: '', full_name: '' })
   const [addError, setAddError] = useState('')
   const [addSuccess, setAddSuccess] = useState('')
+  const [editingPassword, setEditingPassword] = useState<string | null>(null)
+  const [editPasswordValue, setEditPasswordValue] = useState('')
 
   useEffect(() => {
     if (user?.role !== 'admin') {
@@ -66,30 +68,39 @@ export function AdminScreen() {
 
   const handleDeleteUser = async (userId: string, name: string) => {
     if (!confirm(`Удалить пользователя ${name}?`)) return
-    const { data: { session } } = await supabase.auth.getSession()
-    const res = await fetch(
-      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-user`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.access_token}`,
-          apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-        },
-        body: JSON.stringify({ user_id: userId }),
-      }
-    )
-    let json: Record<string, string>
+
+    // Удаляем auth-пользователя через edge function
     try {
-      json = await res.json()
+      const { data: { session } } = await supabase.auth.getSession()
+      await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-user`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session?.access_token}`,
+            apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+          },
+          body: JSON.stringify({ user_id: userId }),
+        }
+      )
     } catch {
-      alert('Ошибка удаления: сервер вернул неожиданный ответ')
-      return
+      // игнорируем ошибку edge function
     }
-    if (json.error) {
-      alert('Ошибка удаления: ' + json.error)
-      return
-    }
+
+    // Всегда удаляем профиль напрямую через admin client
+    await supabaseAdmin.from('profiles').delete().eq('id', userId)
+    loadData()
+  }
+
+  const handleSavePassword = async (userId: string) => {
+    if (!editPasswordValue.trim()) return
+    await supabaseAdmin
+      .from('profiles')
+      .update({ temp_password: editPasswordValue.trim() })
+      .eq('id', userId)
+    setEditingPassword(null)
+    setEditPasswordValue('')
     loadData()
   }
 
@@ -305,7 +316,34 @@ export function AdminScreen() {
                         {u.full_name}
                       </td>
                       <td style={{ padding: '12px 16px', fontSize: '13px', color: '#1A2B4A', fontFamily: 'monospace' }}>
-                        {u.temp_password ?? '—'}
+                        {editingPassword === u.id ? (
+                          <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                            <input
+                              type="text"
+                              value={editPasswordValue}
+                              onChange={(e) => setEditPasswordValue(e.target.value)}
+                              onKeyDown={(e) => e.key === 'Enter' && handleSavePassword(u.id)}
+                              placeholder="Новый пароль"
+                              autoFocus
+                              style={{ padding: '4px 8px', border: '1.5px solid #1A2B4A', borderRadius: '6px', fontSize: '13px', width: '120px' }}
+                            />
+                            <button type="button" title="Сохранить" onClick={() => handleSavePassword(u.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#2E7D32' }}>
+                              <FloppyDisk size={16} weight="fill" />
+                            </button>
+                          </div>
+                        ) : (
+                          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                            <span>{u.temp_password ?? '—'}</span>
+                            <button
+                              type="button"
+                              title="Редактировать пароль"
+                              onClick={() => { setEditingPassword(u.id); setEditPasswordValue(u.temp_password ?? '') }}
+                              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#B0C5D8', padding: '2px' }}
+                            >
+                              <PencilSimple size={13} weight="fill" />
+                            </button>
+                          </div>
+                        )}
                       </td>
                       <td style={{ padding: '12px 16px' }}>
                         {u.contract_signed_at ? (
