@@ -79,9 +79,16 @@ export function AdminScreen() {
         body: JSON.stringify({ user_id: userId }),
       }
     )
-    const json = await res.json()
+    let json: Record<string, string>
+    try {
+      json = await res.json()
+    } catch {
+      alert('Ошибка удаления: сервер вернул неожиданный ответ')
+      return
+    }
     if (json.error) {
       alert('Ошибка удаления: ' + json.error)
+      return
     }
     loadData()
   }
@@ -117,12 +124,6 @@ export function AdminScreen() {
     if (error) {
       setAddError(error.message)
     } else {
-      const userId = json.user?.id
-      if (userId) {
-        await supabase.from('profiles').update({
-          temp_password: newUser.password,
-        }).eq('id', userId)
-      }
       setAddSuccess(`✓ ${newUser.full_name} создан | Email: ${newUser.email} | Пароль: ${newUser.password}`)
       setNewUser({ email: '', password: '', full_name: '' })
       loadData()

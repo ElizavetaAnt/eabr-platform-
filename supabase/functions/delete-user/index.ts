@@ -15,6 +15,28 @@ Deno.serve(async (req) => {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
   )
 
+  // Проверяем что вызывающий — admin
+  const authHeader = req.headers.get('Authorization') ?? ''
+  const token = authHeader.replace('Bearer ', '')
+  const { data: { user: caller } } = await supabaseAdmin.auth.getUser(token)
+  if (!caller) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+  const { data: callerProfile } = await supabaseAdmin
+    .from('profiles')
+    .select('role')
+    .eq('id', caller.id)
+    .single()
+  if (callerProfile?.role !== 'admin') {
+    return new Response(JSON.stringify({ error: 'Forbidden: admins only' }), {
+      status: 403,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+
   const { user_id } = await req.json()
 
   const { error } = await supabaseAdmin.auth.admin.deleteUser(user_id)

@@ -31,9 +31,11 @@ Deno.serve(async (req) => {
     })
   }
 
+  const { password: temp_password } = await Promise.resolve({ password })
+
   const { error: profileError } = await supabaseAdmin
     .from('profiles')
-    .insert({ id: data.user.id, full_name, role: 'student' })
+    .insert({ id: data.user.id, full_name, role: 'student', temp_password })
 
   if (profileError) {
     return new Response(JSON.stringify({ error: profileError.message }), {
