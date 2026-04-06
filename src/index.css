@@ -95,4 +95,12 @@ h1, h2 {
   .role-card-box {
     padding: 20px !important;
   }
+
+  .contract-header {
+    padding: 20px 16px !important;
+  }
+
+  .contract-footer {
+    padding: 20px 16px !important;
+  }
 }

@@ -43,6 +43,7 @@ export function ContractScreen() {
       <div style={{ width: '100%', maxWidth: '720px' }}>
         {/* Заголовок */}
         <div
+          className="contract-header"
           style={{
             background: '#1A2B4A',
             borderRadius: '16px 16px 0 0',
@@ -75,9 +76,7 @@ export function ContractScreen() {
         <div
           style={{
             background: '#fff',
-            padding: '40px',
-            maxHeight: '460px',
-            overflowY: 'auto',
+            padding: '24px 20px',
             fontSize: '14px',
             lineHeight: 1.8,
             color: '#1A2B4A',
@@ -88,6 +87,7 @@ export function ContractScreen() {
 
         {/* Подтверждение */}
         <div
+          className="contract-footer"
           style={{
             background: '#fff',
             borderTop: '1px solid #e0e7ef',
