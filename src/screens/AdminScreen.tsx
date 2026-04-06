@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Users, CheckCircle, XCircle, ShieldCheck, Plus, Eye } from '@phosphor-icons/react'
+import { Users, CheckCircle, XCircle, ShieldCheck, Plus, Eye, Trash } from '@phosphor-icons/react'
 import { supabase } from '../lib/supabase'
 import { Header } from '../components/layout/Header'
 import { useAppStore } from '../store/useAppStore'
@@ -63,6 +63,24 @@ export function AdminScreen() {
 
   const getPassedCount = (userId: string) =>
     getUserQuiz(userId).filter((q) => q.passed).length
+
+  const handleDeleteUser = async (userId: string, name: string) => {
+    if (!confirm(`Удалить пользователя ${name}?`)) return
+    const { data: { session } } = await supabase.auth.getSession()
+    await fetch(
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-user`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session?.access_token}`,
+          apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+        },
+        body: JSON.stringify({ user_id: userId }),
+      }
+    )
+    loadData()
+  }
 
   const handleAddUser = async () => {
     setAddError('')
@@ -252,7 +270,7 @@ export function AdminScreen() {
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ background: '#F4F7FB' }}>
-                    {['ФИО', 'Пароль', 'Договор', 'Прогресс', 'Дата регистрации'].map((h) => (
+                    {['ФИО', 'Пароль', 'Договор', 'Прогресс', 'Дата регистрации', ''].map((h) => (
                       <th
                         key={h}
                         style={{
@@ -319,6 +337,24 @@ export function AdminScreen() {
                       </td>
                       <td style={{ padding: '12px 16px', fontSize: '13px', color: '#607D8B' }}>
                         {new Date(u.created_at).toLocaleDateString('ru-RU')}
+                      </td>
+                      <td style={{ padding: '12px 16px' }}>
+                        <button
+                          onClick={() => handleDeleteUser(u.id, u.full_name)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: '#C62828',
+                            padding: '4px',
+                            borderRadius: '4px',
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}
+                          title="Удалить пользователя"
+                        >
+                          <Trash size={16} weight="fill" />
+                        </button>
                       </td>
                     </tr>
                   ))}
