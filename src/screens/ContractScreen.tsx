@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { CheckCircle, Warning, FileText, ArrowRight } from '@phosphor-icons/react'
 import { supabase } from '../lib/supabase'
 import { useAppStore } from '../store/useAppStore'
+import { PdConsentModal } from '../components/PdConsentModal'
 
 export function ContractScreen() {
   const navigate = useNavigate()
   const { user, setUser } = useAppStore()
+  const [pdConsentAccepted, setPdConsentAccepted] = useState(false)
   const [agreed, setAgreed] = useState(false)
   const [loading, setLoading] = useState(false)
   const contractNumber = user?.contract_number ?? 118
@@ -27,6 +29,16 @@ export function ContractScreen() {
     }
 
     setLoading(false)
+  }
+
+  if (!pdConsentAccepted) {
+    return (
+      <PdConsentModal
+        userName={user?.full_name ?? ''}
+        onAccept={() => setPdConsentAccepted(true)}
+        onDecline={() => navigate('/login')}
+      />
+    )
   }
 
   return (
@@ -139,7 +151,7 @@ export function ContractScreen() {
           >
             <Warning size={18} weight="fill" color="#E65100" style={{ flexShrink: 0, marginTop: '2px' }} />
             <p style={{ fontSize: '13px', color: '#E65100', lineHeight: 1.5 }}>
-              Дата и IP-адрес подписания фиксируются автоматически и являются юридически значимыми.
+              Дата и время подписания фиксируются автоматически и являются юридически значимыми.
             </p>
           </div>
 

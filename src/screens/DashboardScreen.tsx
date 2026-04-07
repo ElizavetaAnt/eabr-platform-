@@ -8,6 +8,7 @@ import {
 import { useAppStore } from '../store/useAppStore'
 import { Header } from '../components/layout/Header'
 import { Watermark } from '../components/layout/Watermark'
+import { Footer } from '../components/layout/Footer'
 import { MODULES_META } from '../content/modules'
 
 const ICON_MAP: Record<string, React.ElementType> = {
@@ -348,6 +349,7 @@ export function DashboardScreen() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   )
 }

@@ -7,6 +7,8 @@ import { ContractScreen } from './screens/ContractScreen'
 import { DashboardScreen } from './screens/DashboardScreen'
 import { ModuleScreen } from './screens/ModuleScreen'
 import { AdminScreen } from './screens/AdminScreen'
+import { PrivacyPolicyScreen } from './screens/PrivacyPolicyScreen'
+import { TermsScreen } from './screens/TermsScreen'
 import type { UserProfile } from './types'
 
 function App() {
@@ -117,6 +119,8 @@ function App() {
             <AdminScreen />
           }
         />
+        <Route path="/privacy-policy" element={<PrivacyPolicyScreen />} />
+        <Route path="/terms" element={<TermsScreen />} />
         <Route path="*" element={<Navigate to={user ? '/dashboard' : '/login'} replace />} />
       </Routes>
     </HashRouter>

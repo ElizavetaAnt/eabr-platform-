@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CheckCircle, XCircle, ArrowRight, Trophy } from '@phosphor-icons/react'
+import { CheckCircle, XCircle, ArrowRight, Trophy, ShieldCheck } from '@phosphor-icons/react'
 import type { QuizQuestion } from '../../types'
 
 interface QuizBlockProps {
@@ -8,11 +8,85 @@ interface QuizBlockProps {
 }
 
 export function QuizBlock({ questions, onComplete }: QuizBlockProps) {
+  const [consentGiven, setConsentGiven] = useState(false)
+  const [consentChecked, setConsentChecked] = useState(false)
   const [current, setCurrent] = useState(0)
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [selected, setSelected] = useState<number | null>(null)
   const [showResult, setShowResult] = useState(false)
   const [finished, setFinished] = useState(false)
+
+  if (!consentGiven) {
+    return (
+      <div
+        style={{
+          background: '#fff',
+          borderRadius: '14px',
+          padding: '28px 24px',
+          boxShadow: '0 2px 12px rgba(26,43,74,0.06)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '20px',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <ShieldCheck size={24} weight="fill" color="#1A2B4A" />
+          <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#1A2B4A', fontFamily: 'Inter, sans-serif' }}>
+            Перед началом теста
+          </h3>
+        </div>
+        <p style={{ fontSize: '14px', color: '#607D8B', lineHeight: 1.7 }}>
+          Результаты теста обрабатываются анонимно: фиксируются только набранные баллы и модуль.
+          Личные данные не сохраняются.
+        </p>
+        <div
+          onClick={() => setConsentChecked(!consentChecked)}
+          style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '12px',
+            cursor: 'pointer',
+            padding: '14px',
+            background: consentChecked ? '#F1F8E9' : '#F4F7FB',
+            borderRadius: '10px',
+            border: `1.5px solid ${consentChecked ? '#2E7D32' : '#e0e7ef'}`,
+            transition: 'all 0.2s',
+          }}
+        >
+          <CheckCircle
+            size={20}
+            weight="fill"
+            color={consentChecked ? '#2E7D32' : '#B0C5D8'}
+            style={{ flexShrink: 0, marginTop: '2px' }}
+          />
+          <span style={{ fontSize: '13px', lineHeight: 1.6, color: '#1A2B4A', userSelect: 'none' }}>
+            Я ознакомлен(а) с{' '}
+            <a href="/#/privacy-policy" style={{ color: '#1A2B4A' }}>Политикой обработки персональных данных</a>
+            {' '}и даю согласие на анонимную обработку результатов теста в целях обучения.
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={() => setConsentGiven(true)}
+          disabled={!consentChecked}
+          style={{
+            background: !consentChecked ? '#e0e7ef' : '#1A2B4A',
+            color: !consentChecked ? '#90A4AE' : '#fff',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '12px 24px',
+            fontSize: '14px',
+            fontFamily: 'Inter, sans-serif',
+            fontWeight: 600,
+            cursor: !consentChecked ? 'not-allowed' : 'pointer',
+            transition: 'all 0.2s',
+          }}
+        >
+          Начать тест
+        </button>
+      </div>
+    )
+  }
 
   const q = questions[current]
   const totalQ = questions.length

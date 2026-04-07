@@ -6,6 +6,7 @@ import {
   ArrowLeft, ArrowRight, BookOpen,
 } from '@phosphor-icons/react'
 import { Header } from '../components/layout/Header'
+import { Footer } from '../components/layout/Footer'
 import { Watermark } from '../components/layout/Watermark'
 import { RoleCard } from '../components/module/RoleCard'
 import { ExpandableBlock } from '../components/module/ExpandableBlock'
@@ -314,6 +315,7 @@ export function ModuleScreen() {
           )}
         </div>
       </main>
+      <Footer />
     </div>
   )
 }
